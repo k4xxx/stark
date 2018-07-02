@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <!--适应手机端-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <title>Title</title>
+</head>
+<style>
+    .well a{
+        text-decoration: none;
+        color: grey;
+    }
+
+    .well .active{
+        color: #2e6da4;
+    }
+</style>
+<body>
+
+<div class="container"><h1>数据展示</h1>
+<div class="row">
+<div class="col-sm-8">
+{% if show_list.config.search_fields %}
+<form class="pull-right" method="post">
+    {% csrf_token %}
+    <input type="text" name="kw"><button>搜索</button>
+</form>
+{% endif %}
+
+<form action="" method="post">
+{% csrf_token %}
+<select name="action_func" class="pull-left" style="height: 26px">
+    <option>-----------</option>
+    {% for action in show_list.get_action_list %}
+        <option value="{{ action.name }}">{{ action.desc }}</option>
+    {% endfor %}
+
+</select>
+<button>Go</button>
+    <table class="table table-bordered table-striped table-hover">
+    <tr>
+    {% for header in header_list %}
+        <th>{{ header }}</th>
+    {% endfor %}
+    </tr>
+        {% for obj_data in new_data_list %}
+            <tr>
+                {% for field in obj_data %}
+                    <td>{{ field }}</td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+</form>
+<a class="btn btn-info" href="{{ add_url }}">添加</a>
+
+
+<!---------------------分页--------------------------->
+   {{ page_html|safe }}
+<!---------------------分页--------------------------->
+</div>
+{% if show_list.get_filter_list %}
+<div class="col-lg-3">
+    <h3>FILTER</h3>
+    {% for data in show_list.get_filter_list %}
+    <div class="well">
+            <p>{{ data.title.upper }}</p>
+            <hr>
+            {% for i in data.data %}
+                <p>{{ i }}</p>
+            {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+</div>
+</div>
+</body>
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+<script>
+    $('#main_check').on('click',function () {
+        if($(this).prop('checked')){
+            $('.fu_check').prop('checked',true)
+        }else{
+            $('.fu_check').prop('checked',false)
+        }
+    })
+</script>
+
+</html>
